@@ -50,7 +50,7 @@ class IRCBot {
 	{
 		$this->socket = fsockopen($config['server'], $config['port']);		
 		$this->login($config);
-		$this->main(0, $interirc);
+		$this->main(0, $interirc, 0, $config);
 	}
 
 	/*
@@ -68,7 +68,7 @@ class IRCBot {
 	 This is the workhorse function, grabs the data from the server 
 and displays on the browser
 	*/
-	function main($nextcheck = 0, $interirc = 0, $time_start = 0)
+	function main($nextcheck = 0, $interirc = 0, $time_start = 0, $config)
 	{
 		$faux = array(); $read=array($this->socket);
 		if(!stream_select($read, $faux, $faux, 0, 200000)){
@@ -79,7 +79,7 @@ and displays on the browser
 				mysql_ping();
 				sleep(5);
 			}
-			return $this->main($nextcheck, $interirc, $time_start);
+			return $this->main($nextcheck, $interirc, $time_start, $config);
 		}
 		$data = fgets($this->socket, 128);
 		echo nl2br($data);
@@ -143,7 +143,7 @@ and displays on the browser
 					$count = $getstuff['count'];
 					$status = $getstuff['status'];
 					if ($status == 0) { $status = "Decision Pending."; }
-					$this->send_data('PRIVMSG '.$config['channel']', ':...Meow! '.$tosearch.': Updated '.$count.' times, with latest status: '.$status.'!');
+					$this->send_data('PRIVMSG '.$config['channel'], ':...Meow! '.$tosearch.': Updated '.$count.' times, with latest status: '.$status.'!');
 				}
 				break;
 
@@ -169,7 +169,7 @@ and displays on the browser
 			
 		}
 
-		$this->main($nextcheck, $interirc, $time_start);
+		$this->main($nextcheck, $interirc, $time_start, $config);
 	}
 
 	function send_data($cmd, $msg = null) //displays stuff to the broswer and sends data to the server.
