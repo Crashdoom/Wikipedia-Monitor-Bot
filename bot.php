@@ -1,4 +1,6 @@
 <?php
+if (!isset($config)) { return 0; } // Prevent script being run outside of IRC Bot
+
 include_once 'diff.function.php'; /* The diff function. */
 include_once 'wikibot.classes.php'; /* The wikipedia classes. */
 
